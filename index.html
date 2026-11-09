@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Languages with Fer — Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Lora&family=IBM+Plex+Mono&display=swap">
+<style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#2a2622;--mute:#7a7167;--line:#e6e0d8;--acc:#c2410c;--accbg:#fdeee6;--ok:#15803d;--okbg:#e3f4e8;--bad:#b91c1c;--badbg:#fbe6e6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1917;--card:#252220;--ink:#f1ece6;--mute:#a39a8f;--line:#3a3532;--acc:#fb923c;--accbg:#3a2418;--ok:#4ade80;--okbg:#17301f;--bad:#f87171;--badbg:#3a1c1c}}
+:root[data-theme="dark"]{--bg:#1b1917;--card:#252220;--ink:#f1ece6;--mute:#a39a8f;--line:#3a3532;--acc:#fb923c;--accbg:#3a2418;--ok:#4ade80;--okbg:#17301f;--bad:#f87171;--badbg:#3a1c1c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:0 0 12px}
+.sub{color:var(--mute);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:16px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+label{display:block;font-size:12px;color:var(--mute);margin:10px 0 3px}
+input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff;width:100%;margin-top:14px;font-weight:600}
+.stu{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.stu:hover{background:var(--bg)}.stu.on{background:var(--accbg);border-color:var(--acc)}
+.stu small{color:var(--mute);display:block}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:18px}.stat span{font-size:12px;color:var(--mute)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--mute);font-weight:600}
+.pill{padding:2px 8px;border-radius:99px;font-size:12px}
+.paid{background:var(--okbg);color:var(--ok)}.late{background:var(--badbg);color:var(--bad)}.soon{background:var(--accbg);color:var(--acc)}
+.del{color:var(--bad);border:none;background:none;padding:2px 6px}
+.empty{color:var(--mute);text-align:center;padding:30px 10px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}.bar i{display:block;height:100%;background:var(--ok)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px 0}
+.cal .h{font-size:12px;color:var(--mute);text-align:center}
+.day{padding:10px 0;text-align:center}
+.day.p{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.day.a{background:var(--badbg);color:var(--bad);border-color:var(--bad)}
+.day.r{background:var(--accbg);color:var(--acc);border-color:var(--acc)}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.legend{font-size:12px;color:var(--mute)}
+:root{--acc:#7c3aed;--accbg:#f1eafe}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--acc:#b79cf0;--accbg:#2b2140}.pill.kr{background:#3b1d2b!important;color:#f9a8d4!important}.pill.jp{background:#1b2a47!important;color:#93c5fd!important}.pill.en{background:#17301f!important;color:#86efac!important}}
+:root[data-theme="dark"]{--acc:#b79cf0;--accbg:#2b2140}
+h1,h2{font-family:'Young Serif','Lora',Georgia,serif;font-weight:400}
+.stat b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:16px}
+.seal{display:inline-block;background:var(--acc);color:#fff;border-radius:8px;padding:0 8px;margin-right:8px}
+.pill.kr{background:#fde4ee;color:#be185d}.pill.jp{background:#e0edff;color:#1d4ed8}.pill.en{background:#e3f4e8;color:#15803d}
+.tab{display:none}.tab.on{display:block}.grid.tab.on{display:grid}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:16px}.tabs button{white-space:nowrap}.tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.it{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.it select{width:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="seal">語</span>Languages with Fer</h1>
+  <p class="sub">Your teaching hub: students, lessons, leads and content in one place.</p>
+  <div id="sync" class="legend" style="margin:-14px 0 16px"></div>
+  <div class="tabs" id="tabs"><button data-t="dash">Dashboard</button><button data-t="students">Students</button><button data-t="lesson">Lessons</button><button data-t="lead">Leads</button><button data-t="post">Content</button><button data-t="res">Resources</button></div>
+  <div class="tab on" id="t-dash"></div><div class="tab" id="t-lesson"></div><div class="tab" id="t-lead"></div><div class="tab" id="t-post"></div><div class="tab" id="t-res"></div>
+  <div class="grid tab" id="t-students">
+    <div>
+      <div class="card">
+        <h2 id="formTitle">New student</h2>
+        <label>Student name</label><input id="name" placeholder="e.g. Ana Souza">
+        <label>Language</label><select id="lang"><option>Korean</option><option>Japanese</option><option>English</option></select>
+        <div class="row">
+          <div><label>Classes per week</label><input id="freq" type="number" min="1" max="14" value="1"></div>
+          <div><label>Contract (months)</label><input id="months" type="number" min="1" max="60" value="6"></div>
+        </div>
+        <label>Contract start date</label><input id="start" type="date">
+        <label>Payment plan</label>
+        <select id="plan">
+          <option value="1">Monthly</option>
+          <option value="3">Quarterly (every 3 months)</option>
+          <option value="6">Semi-annual (every 6 months)</option>
+          <option value="12">Annual (every 12 months)</option>
+        </select>
+        <div class="row">
+          <div><label>Amount per payment (R$)</label><input id="amount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div><label>Due day of month</label><input id="dueDay" type="number" min="1" max="31" placeholder="start day"></div>
+        </div>
+        <button class="primary" id="save">Save student</button>
+        <button id="cancel" style="width:100%;margin-top:8px;display:none">Cancel editing</button>
+      </div>
+      <div class="card"><h2>Students</h2><div id="list"></div></div>
+    </div>
+    <div class="card" id="detail"></div>
+  </div>
+</div>
+<script>
+var KEY="fer-students-v1",students=[],sel=null,editing=null;
+try{students=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){students=[]}
+var col=null,lastSent={};
+function setSync(t,bad){var e=document.getElementById('sync');if(e){e.textContent=t;e.style.color=bad?'var(--bad)':'var(--mute)'}}
+function pushAll(){
+  if(!col)return;
+  var ids={};
+  all().forEach(function(s){
+    ids[s.id]=1;var j=JSON.stringify(s);
+    if(lastSent[s.id]!==j){lastSent[s.id]=j;
+      col.doc(s.id).set(JSON.parse(j)).then(function(){setSync('Synced across your devices')},function(){delete lastSent[s.id];setSync('Couldn’t save to the cloud — kept on this device',true)})}
+  });
+  Object.keys(lastSent).forEach(function(id){if(!ids[id]){delete lastSent[id];col.doc(id).delete().catch(function(){setSync('Couldn’t delete from the cloud',true)})}});
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(students));localStorage.setItem(KEY+'-items',JSON.stringify(items))}catch(e){}pushAll()}
+function initSync(){
+  if(!window.claude||!claude.use){setSync('Saved on this device only');return}
+  var timer=setTimeout(function(){setSync('Can’t reach sync yet — showing the copy on this device',true)},10000);
+  function off(t){clearTimeout(timer);setSync(t)}
+  Promise.all([claude.use('user'),claude.use('db')]).then(function(r){
+    if(!r[0]||!r[1]){off('Saved on this device only — sign in to claude.ai to sync');return}
+    return r[0].id().then(function(id){
+      if(!id){off('Saved on this device only');return}
+      col=r[1].collection('data/users/'+id);
+      var first=true;
+      col.onSnapshot(function(snap){
+        if(first&&snap.metadata&&snap.metadata.fromCache)return;
+        clearTimeout(timer);
+        var remote=snap.docs.map(function(d){return JSON.parse(JSON.stringify(d.data()))});
+        var have={};remote.forEach(function(s){have[s.id]=1});
+        if(first){
+          var done=false;try{done=localStorage.getItem(KEY+'-synced')==='1'}catch(e){}
+          if(!done){students.forEach(function(s){if(!have[s.id])remote.push(s)});try{localStorage.setItem(KEY+'-synced','1')}catch(e){}}
+          first=false;
+        }
+        remote.sort(function(a,b){return a.id<b.id?-1:a.id>b.id?1:0});
+        lastSent={};
+        remote.forEach(function(s){if(have[s.id])lastSent[s.id]=JSON.stringify(s)});
+        students=remote.filter(function(s){return !s.t});items=remote.filter(function(s){return s.t});
+        if(!students.some(function(s){return s.id===sel}))sel=null;
+        persist();render();setSync('Synced across your devices');
+      },function(){off('Sync unavailable — saved on this device only')});
+    });
+  }).catch(function(){off('Saved on this device only')});
+}
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function pd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function fd(d){return d.toLocaleDateString("en-GB")}
+function money(n){return n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function addM(d,n,day){var t=new Date(d.getFullYear(),d.getMonth()+n,1);var last=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();return new Date(t.getFullYear(),t.getMonth(),Math.min(day,last))}
+function schedule(s){
+  var iv=+s.plan,n=Math.ceil(s.months/iv),st=pd(s.start),day=s.dueDay||st.getDate(),out=[];
+  for(var k=0;k<n;k++){
+    var d=k===0&&!s.dueDay?st:addM(st,k*iv,day);
+    out.push({k:k,date:d,amount:s.amount,paid:!!(s.paid&&s.paid[k])});
+  }
+  return out;
+}
+function planName(p){return{1:"Monthly",3:"Quarterly",6:"Semi-annual",12:"Annual"}[p]}
+function renderList(){
+  var el=$("list");
+  if(!students.length){el.innerHTML='<div class="empty">No students yet.</div>';return}
+  el.innerHTML=students.map(function(s){
+    var sc=schedule(s),late=sc.some(function(p){return !p.paid&&p.date<new Date(new Date().setHours(0,0,0,0))});
+    return '<div class="stu'+(s.id===sel?' on':'')+'" data-id="'+s.id+'"><div>'+esc(s.name)+(s.lang?' '+lp(s.lang):'')+'<small>'+s.freq+'x/week · '+planName(s.plan)+'</small></div>'+(late?'<span class="pill late">overdue</span>':'')+'</div>';
+  }).join("");
+  [].forEach.call(el.querySelectorAll(".stu"),function(n){n.onclick=function(){sel=n.dataset.id;render()}});
+}
+function renderDetail(){
+  var el=$("detail"),s=students.filter(function(x){return x.id===sel})[0];
+  if(!s){el.innerHTML='<div class="empty">Select or add a student to see their contract and payment schedule.</div>';return}
+  var sc=schedule(s),today=new Date();today.setHours(0,0,0,0);
+  var total=sc.length*s.amount,paid=sc.filter(function(p){return p.paid}).length*s.amount;
+  var end=addM(pd(s.start),s.months,pd(s.start).getDate());
+  var classes=Math.round(s.freq*s.months*52/12),per=classes?total/classes:0;
+  var next=sc.filter(function(p){return !p.paid})[0];
+  var pct=total?Math.round(paid/total*100):0;
+  var rows=sc.map(function(p){
+    var st=p.paid?'<span class="pill paid">Paid</span>':(p.date<today?'<span class="pill late">Overdue</span>':'<span class="pill soon">Upcoming</span>');
+    return '<tr><td>'+(p.k+1)+'</td><td>'+fd(p.date)+'</td><td>'+money(p.amount)+'</td><td>'+st+'</td><td><input type="checkbox" style="width:auto" data-k="'+p.k+'"'+(p.paid?' checked':'')+'></td></tr>';
+  }).join("");
+  el.innerHTML='<div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2 style="margin:0">'+esc(s.name)+'</h2><div class="sub" style="margin:0 0 14px">'+s.freq+' class'+(s.freq>1?'es':'')+' per week · '+planName(s.plan)+' payments</div></div><div><button id="edit">Edit</button> <button class="del" id="del">Delete</button></div></div>'
+  +'<div class="stats"><div class="stat"><span>Contract start</span><b>'+fd(pd(s.start))+'</b></div><div class="stat"><span>Contract end</span><b>'+fd(end)+'</b></div><div class="stat"><span>Estimated classes</span><b>'+classes+'</b></div><div class="stat"><span>Cost per class</span><b>'+money(per)+'</b></div></div>'
+  +'<div class="stats"><div class="stat"><span>Contract total</span><b>'+money(total)+'</b></div><div class="stat"><span>Received</span><b style="color:var(--ok)">'+money(paid)+'</b></div><div class="stat"><span>Outstanding</span><b>'+money(total-paid)+'</b></div><div class="stat"><span>Next payment</span><b>'+(next?fd(next.date):'All paid')+'</b></div></div>'
+  +'<div class="bar"><i style="width:'+pct+'%"></i></div>'
+  +'<div class="tw"><table><thead><tr><th>#</th><th>Due date</th><th>Amount</th><th>Status</th><th>Paid?</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+attHTML(s)+lessonHist(s);
+  [].forEach.call(el.querySelectorAll("input[data-k]"),function(c){c.onchange=function(){s.paid=s.paid||{};s.paid[c.dataset.k]=c.checked;persist();render()}});
+  $("edit").onclick=function(){startEdit(s)};
+  attHandlers(s);
+  $("del").onclick=function(){var b=$("del");if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Click again to confirm";setTimeout(function(){if(b.isConnected){delete b.dataset.sure;b.textContent="Delete"}},4000);return}students=students.filter(function(x){return x!==s});sel=null;persist();render()};
+}
+var attMonth=null;
+var NEXT={"":"p",p:"a",a:"r",r:""};
+function curMonth(){if(!attMonth){var t=new Date();attMonth=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")}return attMonth}
+function attHTML(s){
+  s.att=s.att||{};
+  var m=curMonth(),y=+m.slice(0,4),mo=+m.slice(5)-1,days=new Date(y,mo+1,0).getDate(),first=new Date(y,mo,1).getDay();
+  var cnt={p:0,a:0,r:0},cells="";
+  for(var i=0;i<first;i++)cells+='<div></div>';
+  for(var d=1;d<=days;d++){var k=m+"-"+String(d).padStart(2,"0"),v=s.att[k]||"";if(v)cnt[v]++;cells+='<button class="day '+v+'" data-d="'+k+'">'+d+'</button>'}
+  var expected=Math.round(s.freq*days/7),held=cnt.p+cnt.a,rate=held?Math.round(cnt.p/held*100)+'%':'–';
+  var label=new Date(y,mo,1).toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+  return '<h2 style="margin-top:24px">Monthly attendance</h2>'
+  +'<div class="nav"><button data-nav="-1">‹ Prev</button><b>'+label+'</b><button data-nav="1">Next ›</button></div>'
+  +'<div class="cal">'+["S","M","T","W","T","F","S"].map(function(x){return '<div class="h">'+x+'</div>'}).join("")+cells+'</div>'
+  +'<div class="legend">Tap a day to cycle: present → absent → rescheduled → clear.</div>'
+  +'<div class="stats" style="margin-top:12px"><div class="stat"><span>Present</span><b style="color:var(--ok)">'+cnt.p+'</b></div><div class="stat"><span>Absent</span><b style="color:var(--bad)">'+cnt.a+'</b></div><div class="stat"><span>Rescheduled</span><b>'+cnt.r+'</b></div><div class="stat"><span>Attendance rate</span><b>'+rate+'</b></div><div class="stat"><span>Expected this month</span><b>~'+expected+'</b></div></div>';
+}
+function attHandlers(s){
+  [].forEach.call(document.querySelectorAll(".day"),function(b){b.onclick=function(){var k=b.dataset.d,n=NEXT[s.att[k]||""];if(n)s.att[k]=n;else delete s.att[k];persist();render()}});
+  [].forEach.call(document.querySelectorAll("[data-nav]"),function(b){b.onclick=function(){var m=curMonth(),t=new Date(+m.slice(0,4),+m.slice(5)-1+(+b.dataset.nav),1);attMonth=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0");render()}});
+}
+var items=[];try{items=JSON.parse(localStorage.getItem(KEY+'-items')||'[]')}catch(e){}
+function all(){return students.concat(items)}
+var STAGES=['New DM','Replied','Trial booked','Enrolled','Lost'],LANGS=['Korean','Japanese','English'];
+var SEC={
+ lesson:{h:'Lesson log',f:[['sid','Student','sel'],['date','Date','date'],['topic','What we covered','txt'],['hw','Homework','txt']]},
+ lead:{h:'Leads',f:[['name','Name or handle','txt'],['lang','Language','sel',LANGS],['stage','Stage','sel',STAGES],['note','Notes','txt']]},
+ post:{h:'Content planner',f:[['date','Date','date'],['kind','Type','sel',['Daily tip','Story','Reel','Carousel']],['lang','Language','sel',LANGS],['idea','Idea or caption','txt']]},
+ res:{h:'Resources',f:[['title','Title','txt'],['lang','Language','sel',LANGS],['url','Link (https://…)','txt']]}
+};
+function lp(l){var m={Korean:['kr','한국어'],Japanese:['jp','日本語'],English:['en','English']}[l];return m?'<span class="pill '+m[0]+'">'+m[1]+'</span>':''}
+function fdd(s){return s?fd(pd(s)):''}
+function it(id){return items.filter(function(q){return q.id===id})[0]}
+function buildSec(t){
+  var c=SEC[t],h='<div class="card"><h2>Add</h2><div class="row">'+c.f.map(function(f){
+    var id='f-'+t+'-'+f[0],inp=f[2]==='sel'?'<select id="'+id+'">'+(f[3]||[]).map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>':'<input id="'+id+'" type="'+(f[2]==='date'?'date':'text')+'" placeholder="'+f[1]+'">';
+    return '<div><label>'+f[1]+'</label>'+inp+'</div>'}).join('')+'</div><button class="primary">Add</button></div><div class="card"><h2>'+c.h+'</h2><div id="l-'+t+'"></div></div>';
+  $('t-'+t).innerHTML=h;
+  c.f.forEach(function(f){if(f[2]==='date')$('f-'+t+'-'+f[0]).value=iso(new Date())});
+  $('t-'+t).querySelector('.primary').onclick=function(){addItem(t)};
+}
+function addItem(t){
+  var c=SEC[t],o={id:t[0]+Date.now(),t:t};
+  c.f.forEach(function(f){o[f[0]]=$('f-'+t+'-'+f[0]).value.trim()});
+  var req=c.f.filter(function(f){return f[2]==='txt'})[0];
+  if(!o[req[0]]||(t==='lesson'&&!o.sid)){$('f-'+t+'-'+req[0]).focus();return}
+  items.push(o);
+  c.f.forEach(function(f){if(f[2]==='txt')$('f-'+t+'-'+f[0]).value=''});
+  persist();renderSecs();
+}
+function sn(id){var s=students.filter(function(q){return q.id===id})[0];return s?s.name.toLowerCase():'~'}
+function listSec(t){var last=null;
+  var el=$('l-'+t);if(!el)return;
+  var a=items.filter(function(i){return i.t===t}).sort(function(x,y){if(t==='lesson'&&x.sid!==y.sid){return (sn(x.sid)+x.sid)>(sn(y.sid)+y.sid)?1:-1}return (y.date||y.id)>(x.date||x.id)?1:-1});
+  if(!a.length){el.innerHTML='<div class="empty">Nothing here yet.</div>';return}
+  el.innerHTML=a.map(function(i){
+    var main,sub='',x='',hd='';
+    if(t==='lesson'){var s=students.filter(function(q){return q.id===i.sid})[0];main=fdd(i.date);if(i.sid!==last){last=i.sid;hd='<h2 style="margin:18px 0 2px">'+(s?esc(s.name)+(s.lang?' '+lp(s.lang):''):'Unknown student')+'</h2>'}sub=esc(i.topic)+(i.hw?' — homework: '+esc(i.hw):'')}
+    else if(t==='lead'){main=esc(i.name)+' '+lp(i.lang);sub=esc(i.note||'');x='<select data-st="'+i.id+'">'+STAGES.map(function(o){return '<option'+(o===i.stage?' selected':'')+'>'+o+'</option>'}).join('')+'</select>'}
+    else if(t==='post'){main=fdd(i.date)+' · '+esc(i.kind)+' '+lp(i.lang);sub=esc(i.idea);x='<label style="margin:0"><input type="checkbox" style="width:auto" data-dn="'+i.id+'"'+(i.done?' checked':'')+'> posted</label>'}
+    else{main=(/^https?:/.test(i.url||'')?'<a href="'+esc(i.url)+'" target="_blank" rel="noopener">'+esc(i.title)+'</a>':esc(i.title))+' '+lp(i.lang)}
+    return hd+'<div class="it"><div style="flex:1;min-width:0"><b>'+main+'</b><div class="legend">'+sub+'</div></div>'+x+'<button class="del" data-rm="'+i.id+'">×</button></div>';
+  }).join('');
+  [].forEach.call(el.querySelectorAll('[data-rm]'),function(b){b.onclick=function(){if(!b.dataset.s){b.dataset.s='1';b.textContent='Sure?';setTimeout(function(){b.dataset.s='';b.textContent='×'},3000);return}items=items.filter(function(q){return q.id!==b.dataset.rm});persist();renderSecs()}});
+  [].forEach.call(el.querySelectorAll('[data-st]'),function(b){b.onchange=function(){it(b.dataset.st).stage=b.value;persist();renderSecs()}});
+  [].forEach.call(el.querySelectorAll('[data-dn]'),function(b){b.onchange=function(){it(b.dataset.dn).done=b.checked;persist();renderSecs()}});
+}
+function lessonHist(s){
+  var a=items.filter(function(i){return i.t==='lesson'&&i.sid===s.id}).sort(function(x,y){return y.date>x.date?1:-1}).slice(0,5);
+  return a.length?'<h2 style="margin-top:24px">Recent lessons</h2>'+a.map(function(i){return '<div class="it"><div><b>'+fdd(i.date)+'</b><div class="legend">'+esc(i.topic)+(i.hw?' — homework: '+esc(i.hw):'')+'</div></div></div>'}).join(''):'';
+}
+function dash(){
+  var t=new Date(),y=t.getFullYear(),m=t.getMonth(),td=new Date(y,m,t.getDate()),mk=y+'-'+String(m+1).padStart(2,'0');
+  var due=0,got=0,late=[],kr=0,jp=0,en=0,pr=0,ab=0;
+  students.forEach(function(s){
+    if(s.lang==='Japanese')jp++;else if(s.lang==='Korean')kr++;else if(s.lang==='English')en++;
+    schedule(s).forEach(function(p){
+      if(p.date.getFullYear()===y&&p.date.getMonth()===m){due+=p.amount;if(p.paid)got+=p.amount}
+      if(!p.paid&&p.date<td)late.push(esc(s.name)+' · '+fd(p.date)+' · '+money(p.amount));
+    });
+    Object.keys(s.att||{}).forEach(function(k){if(k.slice(0,7)===mk){if(s.att[k]==='p')pr++;if(s.att[k]==='a')ab++}});
+  });
+  var open=items.filter(function(i){return i.t==='lead'&&i.stage!=='Enrolled'&&i.stage!=='Lost'}).length;
+  var les=items.filter(function(i){return i.t==='lesson'&&(i.date||'').slice(0,7)===mk}).length;
+  var todo=items.filter(function(i){return i.t==='post'&&!i.done&&i.date&&i.date>=iso(td)}).length;
+  function c(l,v){return '<div class="stat"><span>'+l+'</span><b>'+v+'</b></div>'}
+  return '<div class="card"><h2>This month</h2><div class="stats">'+c('Due this month',money(due))+c('Received',money(got))+c('Still to receive',money(due-got))+c('Attendance',pr+ab?Math.round(pr/(pr+ab)*100)+'%':'–')+'</div><div class="stats">'+c('Korean students',kr)+c('Japanese students',jp)+c('English students',en)+c('Open leads',open)+c('Lessons logged',les)+c('Posts planned',todo)+'</div></div>'
+  +'<div class="card"><h2>Overdue payments</h2>'+(late.length?late.map(function(x){return '<div class="it">'+x+'</div>'}).join(''):'<div class="empty">Nothing overdue</div>')+'</div>';
+}
+function renderSecs(){
+  var sid=$('f-lesson-sid');
+  if(sid){var v=sid.value;sid.innerHTML=students.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');sid.value=v}
+  ['lesson','lead','post','res'].forEach(listSec);
+  $('t-dash').innerHTML=dash();
+}
+function showTab(n){
+  [].forEach.call(document.querySelectorAll('.tab'),function(e){e.classList.toggle('on',e.id==='t-'+n)});
+  [].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.classList.toggle('on',b.dataset.t===n)});
+}
+function fromHash(){var h=location.hash.slice(1);showTab(['dash','students','lesson','lead','post','res'].indexOf(h)>-1?h:'dash')}
+function render(){renderList();renderDetail();renderSecs()}
+function resetForm(){editing=null;["name","amount","dueDay"].forEach(function(i){$(i).value=""});$("lang").value="Korean";$("freq").value=1;$("months").value=6;$("plan").value="1";$("start").value=iso(new Date());$("formTitle").textContent="New student";$("save").textContent="Save student";$("cancel").style.display="none"}
+function startEdit(s){editing=s.id;$("name").value=s.name;$("lang").value=s.lang||"Korean";$("freq").value=s.freq;$("months").value=s.months;$("start").value=s.start;$("plan").value=s.plan;$("amount").value=s.amount;$("dueDay").value=s.dueDay||"";$("formTitle").textContent="Edit student";$("save").textContent="Update student";$("cancel").style.display="block";window.scrollTo(0,0)}
+$("cancel").onclick=resetForm;
+$("save").onclick=function(){
+  var name=$("name").value.trim(),amount=parseFloat($("amount").value),start=$("start").value;
+  if(!name||!start||isNaN(amount)){$("formTitle").textContent="Please fill in name, start date and amount";return}
+  var d={name:name,lang:$("lang").value,freq:Math.max(1,+$("freq").value||1),months:Math.max(1,+$("months").value||1),start:start,plan:$("plan").value,amount:amount,dueDay:+$("dueDay").value||0};
+  if(editing){var s=students.filter(function(x){return x.id===editing})[0];Object.assign(s,d);sel=s.id}
+  else{d.id=String(Date.now());d.paid={};students.push(d);sel=d.id}
+  persist();resetForm();render();
+};
+resetForm();render();
+['lesson','lead','post','res'].forEach(buildSec);
+$('tabs').onclick=function(e){var n=e.target.dataset&&e.target.dataset.t;if(n)location.hash=n};
+window.onhashchange=fromHash;fromHash();renderSecs();
+initSync();
+</script>
+</body>
+</html>

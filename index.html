@@ -146,8 +146,10 @@ function showLogin(on){
     d.innerHTML='<div class="card" style="width:100%;max-width:340px"><h2>Sign in to your hub</h2><label>Email</label><input id="lg-e" type="email" autocomplete="username"><label>Password</label><input id="lg-p" type="password" autocomplete="current-password"><button class="primary" id="lg-in">Sign in</button><button id="lg-up" style="width:100%;margin-top:8px">Create account (first time only)</button><div class="legend" id="lg-m" style="margin-top:8px"></div></div>';
     document.body.appendChild(d);
     var go=function(kind){
+      var em=$('lg-e').value.trim(),pw=$('lg-p').value;
+      if(!em||pw.length<6){$('lg-m').textContent='Please type your email and a password with at least 6 characters.';return}
       $('lg-m').textContent='Please wait…';
-      sb.auth[kind]({email:$('lg-e').value.trim(),password:$('lg-p').value}).then(function(r){
+      sb.auth[kind]({email:em,password:pw}).then(function(r){
         if(r.error){$('lg-m').textContent=r.error.message;return}
         if(!r.data.session){$('lg-m').textContent='Account created. Check your email to confirm it, then sign in.';return}
         start(r.data.user.id);

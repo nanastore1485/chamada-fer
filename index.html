@@ -56,6 +56,7 @@ h1,h2{font-family:'Young Serif','Lora',Georgia,serif;font-weight:400}
 .tab{display:none}.tab.on{display:block}.grid.tab.on{display:grid}
 .tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:16px}.tabs button{white-space:nowrap}.tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .it{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.it select{width:auto}
+textarea{border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:12px/1.4 ui-monospace,monospace;padding:8px}
 </style>
 </head>
 <body>
@@ -63,8 +64,8 @@ h1,h2{font-family:'Young Serif','Lora',Georgia,serif;font-weight:400}
   <h1><span class="seal">語</span>Languages with Fer</h1>
   <p class="sub">Your teaching hub: students, lessons, leads and content in one place.</p>
   <div id="sync" class="legend" style="margin:-14px 0 16px"></div>
-  <div class="tabs" id="tabs"><button data-t="dash">Dashboard</button><button data-t="students">Students</button><button data-t="lesson">Lessons</button><button data-t="lead">Leads</button><button data-t="post">Content</button><button data-t="res">Resources</button></div>
-  <div class="tab on" id="t-dash"></div><div class="tab" id="t-lesson"></div><div class="tab" id="t-lead"></div><div class="tab" id="t-post"></div><div class="tab" id="t-res"></div>
+  <div class="tabs" id="tabs"><button data-t="dash">Dashboard</button><button data-t="students">Students</button><button data-t="lesson">Lessons</button><button data-t="lead">Leads</button><button data-t="post">Content</button><button data-t="res">Resources</button><button data-t="backup">Backup</button></div>
+  <div class="tab on" id="t-dash"></div><div class="tab" id="t-lesson"></div><div class="tab" id="t-lead"></div><div class="tab" id="t-post"></div><div class="tab" id="t-res"></div><div class="tab" id="t-backup"></div>
   <div class="grid tab" id="t-students">
     <div>
       <div class="card">
@@ -95,51 +96,76 @@ h1,h2{font-family:'Young Serif','Lora',Georgia,serif;font-weight:400}
     <div class="card" id="detail"></div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
+var HUB_CONFIG={url:"https://muhiyijacggzewhgcmif.supabase.co/rest/v1/",key:"sb_secret_dH1IJ2jXkrD2sDG9EvXLJQ_k_VRPQv0"};
 var KEY="fer-students-v1",students=[],sel=null,editing=null;
 try{students=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){students=[]}
-var col=null,lastSent={};
+var sb=null,uid=null,lastSent={},pending=0,chan=null;
 function setSync(t,bad){var e=document.getElementById('sync');if(e){e.textContent=t;e.style.color=bad?'var(--bad)':'var(--mute)'}}
 function pushAll(){
-  if(!col)return;
+  if(!sb||!uid)return;
   var ids={};
   all().forEach(function(s){
     ids[s.id]=1;var j=JSON.stringify(s);
-    if(lastSent[s.id]!==j){lastSent[s.id]=j;
-      col.doc(s.id).set(JSON.parse(j)).then(function(){setSync('Synced across your devices')},function(){delete lastSent[s.id];setSync('Couldn’t save to the cloud — kept on this device',true)})}
+    if(lastSent[s.id]!==j){lastSent[s.id]=j;pending++;
+      sb.from('hub_docs').upsert({id:s.id,data:JSON.parse(j)}).then(function(r){pending--;if(r.error){delete lastSent[s.id];setSync('Couldn’t save to the cloud — kept on this device',true)}else setSync('Synced across your devices')})}
   });
-  Object.keys(lastSent).forEach(function(id){if(!ids[id]){delete lastSent[id];col.doc(id).delete().catch(function(){setSync('Couldn’t delete from the cloud',true)})}});
+  Object.keys(lastSent).forEach(function(id){if(!ids[id]){delete lastSent[id];pending++;sb.from('hub_docs').delete().eq('id',id).then(function(r){pending--;if(r.error)setSync('Couldn’t delete from the cloud',true)})}});
 }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(students));localStorage.setItem(KEY+'-items',JSON.stringify(items))}catch(e){}pushAll()}
+function loadRemote(first){
+  sb.from('hub_docs').select('id,data').then(function(r){
+    if(r.error){setSync('Sync unavailable — saved on this device only',true);return}
+    var remote=r.data.map(function(x){return x.data}),have={};
+    remote.forEach(function(s){have[s.id]=1});
+    if(first){
+      var done=false;try{done=localStorage.getItem(KEY+'-synced')==='1'}catch(e){}
+      if(!done){all().forEach(function(s){if(!have[s.id])remote.push(s)});try{localStorage.setItem(KEY+'-synced','1')}catch(e){}}
+    }
+    remote.sort(function(a,b){return a.id<b.id?-1:a.id>b.id?1:0});
+    lastSent={};remote.forEach(function(s){if(have[s.id])lastSent[s.id]=JSON.stringify(s)});
+    students=remote.filter(function(s){return !s.t});items=remote.filter(function(s){return s.t});
+    if(!students.some(function(s){return s.id===sel}))sel=null;
+    persist();render();setSync('Synced across your devices');
+  });
+}
+function start(id){
+  uid=id;showLogin(false);setSync('Connecting…');
+  loadRemote(true);
+  if(!chan){
+    chan=sb.channel('hub').on('postgres_changes',{event:'*',schema:'public',table:'hub_docs'},function(){if(!pending)loadRemote(false)}).subscribe();
+    document.addEventListener('visibilitychange',function(){if(!document.hidden&&uid&&!pending)loadRemote(false)});
+  }
+}
+function showLogin(on){
+  var d=document.getElementById('login');
+  if(!d){
+    d=document.createElement('div');d.id='login';
+    d.style.cssText='position:fixed;inset:0;background:var(--bg);z-index:50;display:none;align-items:center;justify-content:center;padding:16px';
+    d.innerHTML='<div class="card" style="width:100%;max-width:340px"><h2>Sign in to your hub</h2><label>Email</label><input id="lg-e" type="email" autocomplete="username"><label>Password</label><input id="lg-p" type="password" autocomplete="current-password"><button class="primary" id="lg-in">Sign in</button><button id="lg-up" style="width:100%;margin-top:8px">Create account (first time only)</button><div class="legend" id="lg-m" style="margin-top:8px"></div></div>';
+    document.body.appendChild(d);
+    var go=function(kind){
+      $('lg-m').textContent='Please wait…';
+      sb.auth[kind]({email:$('lg-e').value.trim(),password:$('lg-p').value}).then(function(r){
+        if(r.error){$('lg-m').textContent=r.error.message;return}
+        if(!r.data.session){$('lg-m').textContent='Account created. Check your email to confirm it, then sign in.';return}
+        start(r.data.user.id);
+      });
+    };
+    $('lg-in').onclick=function(){go('signInWithPassword')};
+    $('lg-up').onclick=function(){go('signUp')};
+  }
+  d.style.display=on?'flex':'none';
+}
 function initSync(){
-  if(!window.claude||!claude.use){setSync('Saved on this device only');return}
-  var timer=setTimeout(function(){setSync('Can’t reach sync yet — showing the copy on this device',true)},10000);
-  function off(t){clearTimeout(timer);setSync(t)}
-  Promise.all([claude.use('user'),claude.use('db')]).then(function(r){
-    if(!r[0]||!r[1]){off('Saved on this device only — sign in to claude.ai to sync');return}
-    return r[0].id().then(function(id){
-      if(!id){off('Saved on this device only');return}
-      col=r[1].collection('data/users/'+id);
-      var first=true;
-      col.onSnapshot(function(snap){
-        if(first&&snap.metadata&&snap.metadata.fromCache)return;
-        clearTimeout(timer);
-        var remote=snap.docs.map(function(d){return JSON.parse(JSON.stringify(d.data()))});
-        var have={};remote.forEach(function(s){have[s.id]=1});
-        if(first){
-          var done=false;try{done=localStorage.getItem(KEY+'-synced')==='1'}catch(e){}
-          if(!done){students.forEach(function(s){if(!have[s.id])remote.push(s)});try{localStorage.setItem(KEY+'-synced','1')}catch(e){}}
-          first=false;
-        }
-        remote.sort(function(a,b){return a.id<b.id?-1:a.id>b.id?1:0});
-        lastSent={};
-        remote.forEach(function(s){if(have[s.id])lastSent[s.id]=JSON.stringify(s)});
-        students=remote.filter(function(s){return !s.t});items=remote.filter(function(s){return s.t});
-        if(!students.some(function(s){return s.id===sel}))sel=null;
-        persist();render();setSync('Synced across your devices');
-      },function(){off('Sync unavailable — saved on this device only')});
-    });
-  }).catch(function(){off('Saved on this device only')});
+  var C=window.HUB_CONFIG||{};
+  if(!window.supabase||!C.url||C.url.indexOf('PASTE')>-1){setSync('Saved on this device only — sync is not set up yet',true);return}
+  sb=supabase.createClient(C.url,C.key);
+  sb.auth.getSession().then(function(r){
+    if(r.data&&r.data.session)start(r.data.session.user.id);else showLogin(true);
+  });
+  sb.auth.onAuthStateChange(function(ev){if(ev==='SIGNED_OUT'){uid=null;showLogin(true)}});
 }
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -282,13 +308,31 @@ function renderSecs(){
   var sid=$('f-lesson-sid');
   if(sid){var v=sid.value;sid.innerHTML=students.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');sid.value=v}
   ['lesson','lead','post','res'].forEach(listSec);
-  $('t-dash').innerHTML=dash();
+  $('t-dash').innerHTML=dash();bkRender();
 }
 function showTab(n){
   [].forEach.call(document.querySelectorAll('.tab'),function(e){e.classList.toggle('on',e.id==='t-'+n)});
   [].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.classList.toggle('on',b.dataset.t===n)});
 }
-function fromHash(){var h=location.hash.slice(1);showTab(['dash','students','lesson','lead','post','res'].indexOf(h)>-1?h:'dash')}
+function fromHash(){var h=location.hash.slice(1);showTab(['dash','students','lesson','lead','post','res','backup'].indexOf(h)>-1?h:'dash')}
+function bkRender(){
+  var el=$('t-backup');if(!el)return;
+  if(!el.firstChild){
+    el.innerHTML='<div class="card"><h2>Backup</h2><p class="sub" style="margin:0 0 8px">Copy this text and keep it somewhere safe. It holds all your students, lessons, leads, content and resources.</p><textarea id="bk-out" readonly rows="6" style="width:100%"></textarea></div><div class="card"><h2>Restore or move data</h2><p class="sub" style="margin:0 0 8px">Paste a backup here to add its entries to this hub. Entries with the same ID are overwritten.</p><textarea id="bk-in" rows="6" style="width:100%" placeholder="Paste backup text"></textarea><button class="primary" id="bk-go">Import</button><div class="legend" id="bk-msg"></div></div>';
+    $('bk-go').onclick=function(){
+      try{
+        var a=JSON.parse($('bk-in').value),n=0;if(!Array.isArray(a))throw 0;
+        a.forEach(function(o){
+          if(!o||!o.id||(!o.t&&!(o.name&&o.start)))return;
+          var list=o.t?items:students,k=list.findIndex(function(q){return q.id===o.id});
+          if(k>-1)list[k]=o;else list.push(o);n++;
+        });
+        persist();render();$('bk-in').value='';$('bk-msg').textContent=n+' entries imported.';
+      }catch(e){$('bk-msg').textContent='That doesn’t look like a valid backup.'}
+    };
+  }
+  $('bk-out').value=JSON.stringify(all());
+}
 function render(){renderList();renderDetail();renderSecs()}
 function resetForm(){editing=null;["name","amount","dueDay"].forEach(function(i){$(i).value=""});$("lang").value="Korean";$("freq").value=1;$("months").value=6;$("plan").value="1";$("start").value=iso(new Date());$("formTitle").textContent="New student";$("save").textContent="Save student";$("cancel").style.display="none"}
 function startEdit(s){editing=s.id;$("name").value=s.name;$("lang").value=s.lang||"Korean";$("freq").value=s.freq;$("months").value=s.months;$("start").value=s.start;$("plan").value=s.plan;$("amount").value=s.amount;$("dueDay").value=s.dueDay||"";$("formTitle").textContent="Edit student";$("save").textContent="Update student";$("cancel").style.display="block";window.scrollTo(0,0)}
